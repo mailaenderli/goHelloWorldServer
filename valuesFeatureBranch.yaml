@@ -1,4 +1,4 @@
 image: <+artifact.image>
-nodePort: 33000
+nodePort: 32500
 dnsName: <+stage.variables.namespace>.test.cloud.daz.ch
 prefix: <+stage.variables.namespace>-
