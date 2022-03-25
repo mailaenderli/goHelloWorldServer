@@ -2,4 +2,4 @@ A
 s
 sdf
 
-new feature +1 asdf
+new feature +1 asdf asdf
