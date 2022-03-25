@@ -49,7 +49,7 @@ pipeline:
                                     connectorRef: org.Docker_Hub
                                     repo: rmailaender/gohelloworldserver
                                     tags:
-                                        - <+pipeline.variables.branchpushed>-<+pipeline.sequenceId>
+                                        - <+pipeline.variables.dockerTag>
                                 failureStrategies: []
         - stage:
               name: Integration tests
@@ -78,7 +78,7 @@ pipeline:
                         type: Service
                         spec:
                             connectorRef: org.Docker_Hub
-                            image: rmailaender/gohelloworldserver:<+pipeline.variables.branchpushed>-<+pipeline.sequenceId>
+                            image: rmailaender/gohelloworldserver:<+pipeline.variables.dockerTag>
     flowControl:
         barriers: []
     variables:
