@@ -1,4 +1,4 @@
 image: <+artifact.image>
 nodePort: 32500
 dnsName: <+stage.variables.namespace>.test.cloud.daz.ch
-prefix: <+stage.variables.namespace>-
+prefix: <+<+stage.variables.namespace>.concat("-")>
