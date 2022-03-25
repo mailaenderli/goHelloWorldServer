@@ -84,10 +84,10 @@ pipeline:
     variables:
         - name: branchpushed
           type: String
-          value: <+input>.allowedValues(main,feature)
+          value: <+input>.allowedValues(main-,feature-)
         - name: identifier
           type: String
           value: <+input>
         - name: dockerTag
           type: String
-          value: <+pipeline.variables.identifier>
+          value: <+<+pipeline.variables.branchpushed>.concat(<+pipeline.variables.identifier>)>
