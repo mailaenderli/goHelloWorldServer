@@ -83,3 +83,7 @@ pipeline:
                             - AllErrors
                         action:
                             type: StageRollback
+              variables:
+                  - name: namespace
+                    type: String
+                    value: <+input>
