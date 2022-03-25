@@ -90,4 +90,4 @@ pipeline:
           value: <+input>
         - name: dockerTag
           type: String
-          value: <+pipeline.variables.branchpushed>-<+pipeline.variables.identifier>
+          value: <+pipeline.variables.branchpushed>AAAA<+pipeline.variables.identifier>
