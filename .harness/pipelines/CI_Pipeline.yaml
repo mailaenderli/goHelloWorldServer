@@ -85,6 +85,6 @@ pipeline:
         - name: branchpushed
           type: String
           value: <+input>.allowedValues(main,feature)
-        - name: dockerTag
+        - name: identifier
           type: String
           value: <+input>
