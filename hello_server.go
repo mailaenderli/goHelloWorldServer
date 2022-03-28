@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gorilla/mux"
+	httptrace "github.com/signalfx/signalfx-go-tracing/contrib/net/http"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -28,12 +28,12 @@ func CreateGreeting(name string) string {
 
 func main() {
 	// Create Server and Route Handlers
-	r := mux.NewRouter()
+	mux := httptrace.NewServeMux()
 
-	r.HandleFunc("/", handler)
+	mux.HandleFunc("/", handler)
 
 	srv := &http.Server{
-		Handler:      r,
+		Handler:      mux,
 		Addr:         ":8080",
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
