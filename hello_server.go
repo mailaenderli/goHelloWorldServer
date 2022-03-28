@@ -11,6 +11,7 @@ import (
 
 	httptrace "github.com/signalfx/signalfx-go-tracing/contrib/net/http"
 	"github.com/signalfx/signalfx-go-tracing/ddtrace/tracer" // global tracer
+	"github.com/signalfx/signalfx-go-tracing/tracing" // helper
 )
 
 func TraceIdFromCtx(ctx context.Context) (result string) {
@@ -21,9 +22,10 @@ func TraceIdFromCtx(ctx context.Context) (result string) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	query := r.URL.Query()
 	name := query.Get("name")
-	log.Printf("Received request for %s\n", name)
+	log.Printf("Received request for %s\n", name, TraceIdFromCtx(ctx))
 	w.Write([]byte(CreateGreeting(name)))
 }
 
@@ -36,7 +38,9 @@ func CreateGreeting(name string) string {
 
 func main() {
 	// Create Server and Route Handlers
-
+	tracing.Start()
+	defer tracing.Stop()
+	
 	mux := httptrace.NewServeMux(httptrace.WithServiceName("goHelloWorld"))
 
 	mux.HandleFunc("/", handler)
