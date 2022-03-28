@@ -11,7 +11,6 @@ import (
 
 	httptrace "github.com/signalfx/signalfx-go-tracing/contrib/net/http"
 	"github.com/signalfx/signalfx-go-tracing/ddtrace/tracer" // global tracer
-  	"github.com/signalfx/signalfx-go-tracing/tracing" // helper
 )
 
 func TraceIdFromCtx(ctx context.Context) (result string) {
