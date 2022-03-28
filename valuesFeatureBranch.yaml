@@ -1,4 +1,4 @@
 image: <+artifact.image>
 nodePort: 32500
-dnsName: <+stage.variables.branchName>.test.cloud.daz.ch
-prefix: <+<+stage.variables.branchName>.concat("-")>
+dnsName: <+<+stage.variables.branchName>.toLowerCase()>.test.cloud.daz.ch
+prefix: <+<+<+stage.variables.branchName>.concat("-")>.toLowerCase()>
