@@ -10,7 +10,16 @@ import (
 	"time"
 
 	httptrace "github.com/signalfx/signalfx-go-tracing/contrib/net/http"
+	"github.com/signalfx/signalfx-go-tracing/ddtrace/tracer" // global tracer
+  	"github.com/signalfx/signalfx-go-tracing/tracing" // helper
 )
+
+func TraceIdFromCtx(ctx context.Context) (result string) {
+	if span, ok := tracer.SpanFromContext(ctx); ok {
+	  result = tracer.TraceIDHex(span.Context())
+	}
+	return
+}
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
