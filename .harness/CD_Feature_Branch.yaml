@@ -84,6 +84,6 @@ pipeline:
                         action:
                             type: StageRollback
               variables:
-                  - name: namespace
+                  - name: branchName
                     type: String
                     value: <+input>
