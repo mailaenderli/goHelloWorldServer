@@ -30,7 +30,7 @@ pipeline:
                                                     gitFetchType: Branch
                                                     paths:
                                                         - deployment.yaml
-                                                    branch: main
+                                                    branch: <+stage.variables.branchName>
                                             skipResourceVersioning: false
                                   - manifest:
                                         identifier: ValuesFeatureBranch
@@ -43,7 +43,7 @@ pipeline:
                                                     gitFetchType: Branch
                                                     paths:
                                                         - valuesFeatureBranch.yaml
-                                                    branch: main
+                                                    branch: <+stage.variables.branchName>
                               artifacts:
                                   primary:
                                       spec:
