@@ -28,9 +28,8 @@ func CreateGreeting(name string) string {
 
 func main() {
 	// Create Server and Route Handlers
-	tracing.Start()
 
-	mux := httptrace.NewServeMux()
+	mux := httptrace.NewServeMux(httptrace.WithServiceName("goHelloWorld"))
 
 	mux.HandleFunc("/", handler)
 
@@ -64,7 +63,6 @@ func waitForShutdown(srv *http.Server) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 	srv.Shutdown(ctx)
-	tracing.Stop()
 
 	log.Println("Shutting down")
 	os.Exit(0)
