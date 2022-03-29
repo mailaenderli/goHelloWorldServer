@@ -46,8 +46,8 @@ func RndDelay(ctx context.Context) {
 	defer span.End()
 
 	rand.Seed(time.Now().UnixNano())
-    sleepTime := rand.Intn(2) // n will be between 0 and 2
-    time.Sleep(time.Duration(sleepTime)*time.Second)
+    sleepTime := rand.Intn(2000) // n will be between 0 and 2000
+    time.Sleep(time.Duration(sleepTime)*time.Millisecond)
 
 	span.SetAttributes(attribute.Int("httpHandler.rndDelay", int(sleepTime)))
 }
