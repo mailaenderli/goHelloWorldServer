@@ -21,30 +21,25 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 	_, span := tracer.Start(ctx, "httpHandler")
 	defer span.End()
 
-
+	rand.Seed(time.Now().UnixNano())
+    sleepTime := rand.Intn(2) // n will be between 0 and 2
+    time.Sleep(time.Duration(sleepTime)*time.Second)
 
 	query := r.URL.Query()
 	name := query.Get("name")
 	log.Printf("Received request for %s\n", name)
 
-	span.SetAttributes(attribute.String("httpHandler.name", string(name)))
+	greeting := CreateGreeting(name)
 
-	w.Write([]byte(CreateGreeting(name, ctx)))
+	span.SetAttributes(attribute.String("httpHandler.greeting", string(greeting)))
+	span.SetAttributes(attribute.Int("httpHandler.rndDelay", int(sleepTime)))
+	w.Write([]byte(greeting))
 }
 
-func CreateGreeting(name string, ctx context.Context) string {
+func CreateGreeting(name string) string {
 	if name == "" {
 		name = "Guest"
 	}
-
-	_, span := tracer.Start(ctx, "createGreeting")
-	defer span.End()
-
-	rand.Seed(time.Now().UnixNano())
-    sleepTime := rand.Intn(2) // n will be between 0 and 2
-    time.Sleep(time.Duration(sleepTime)*time.Second)
-
-	span.SetAttributes(attribute.Int("httpHandler.rndDelay", int(sleepTime)))
 
 	return "Hello, " + name + "\n"
 }
