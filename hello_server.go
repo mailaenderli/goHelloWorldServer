@@ -15,16 +15,12 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 )
 
+var tracer = otel.Tracer("github.com/mailaenderli/goHelloWorldServer")
 
 func httpHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	_, span := tracer.Start(ctx, "httpHandler")
-	defer span.End()
-
-	rand.Seed(time.Now().UnixNano())
-    sleepTime := rand.Intn(2) // n will be between 0 and 2
-    time.Sleep(time.Duration(sleepTime)*time.Second)
-
+	span := trace.SpanFromContext(ctx)
+	
 	query := r.URL.Query()
 	name := query.Get("name")
 	log.Printf("Received request for %s\n", name)
@@ -32,8 +28,21 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 	greeting := CreateGreeting(name)
 
 	span.SetAttributes(attribute.String("httpHandler.greeting", string(greeting)))
-	span.SetAttributes(attribute.Int("httpHandler.rndDelay", int(sleepTime)))
+	
+	RndDelay(ctx)
+
 	w.Write([]byte(greeting))
+}
+
+func RndDelay(ctx context.Context) {
+	_, span := tracer.Start(ctx, "RndDelay")
+	defer span.End()
+
+	rand.Seed(time.Now().UnixNano())
+    sleepTime := rand.Intn(2) // n will be between 0 and 2
+    time.Sleep(time.Duration(sleepTime)*time.Second)
+
+	span.SetAttributes(attribute.Int("httpHandler.rndDelay", int(sleepTime)))
 }
 
 func CreateGreeting(name string) string {
@@ -50,7 +59,7 @@ func main() {
 	wrappedHandler := otelhttp.NewHandler(handler, "httpHandler-instrumented")
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", wrappedHandler)
+	mux.Handle("/", wrappedHandler)
 
 	srv := &http.Server{
 		Handler:      mux,
