@@ -35,3 +35,18 @@ spec:
         image: {{.Values.image}}
         ports:
         - containerPort: 8080
+        env:
+            - name: SPLUNK_OTEL_AGENT
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: SIGNALFX_ENDPOINT_URL
+              value: "http://$(SPLUNK_OTEL_AGENT):9080/v1/trace"
+            - name: SIGNALFX_SERVICE_NAME
+              value: "GoHelloWorldApp"
+            - name: SIGNALFX_SPAN_TAGS
+              value: {{.Values.environment}}
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://$(SPLUNK_OTEL_AGENT):4318
+            - name: SERVICE_VERSION
+              value: 0.1.0

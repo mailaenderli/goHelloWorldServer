@@ -8,32 +8,102 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"math/rand"
 
-	"github.com/gorilla/mux"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
+
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+	"go.opentelemetry.io/otel/sdk/resource"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.7.0"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
+var tracer = otel.Tracer("github.com/mailaenderli/goHelloWorldServer")
+
+func httpHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	span := trace.SpanFromContext(ctx)
+	
 	query := r.URL.Query()
 	name := query.Get("name")
 	log.Printf("Received request for %s\n", name)
-	w.Write([]byte(CreateGreeting(name)))
+
+	greeting := CreateGreeting(name)
+
+	span.SetAttributes(attribute.String("httpHandler.greeting", string(greeting)))
+	
+	RndDelay(ctx)
+
+	w.Write([]byte(greeting))
+}
+
+func RndDelay(ctx context.Context) {
+	_, span := tracer.Start(ctx, "RndDelay")
+	defer span.End()
+
+	rand.Seed(time.Now().UnixNano())
+    sleepTime := rand.Intn(2000) // n will be between 0 and 2000
+    time.Sleep(time.Duration(sleepTime)*time.Millisecond)
+
+	span.SetAttributes(attribute.Int("httpHandler.rndDelay", int(sleepTime)))
 }
 
 func CreateGreeting(name string) string {
 	if name == "" {
 		name = "Guest"
 	}
+
 	return "Hello, " + name + "\n"
 }
 
-func main() {
-	// Create Server and Route Handlers
-	r := mux.NewRouter()
+func newResource() *resource.Resource {
+	return resource.NewWithAttributes(
+		semconv.SchemaURL,
+		semconv.ServiceNameKey.String(os.Getenv("SIGNALFX_SERVICE_NAME")),
+		semconv.ServiceVersionKey.String(os.Getenv("SERVICE_VERSION")),
+		semconv.DeploymentEnvironmentKey.String(os.Getenv("SIGNALFX_SPAN_TAGS")),
+	)
+}
 
-	r.HandleFunc("/", handler)
+func installExportPipeline(ctx context.Context) func() {
+	client := otlptracehttp.NewClient()
+	exporter, err := otlptrace.New(ctx, client)
+	if err != nil {
+		log.Fatalf("creating OTLP trace exporter: %v", err)
+	}
+
+	tracerProvider := sdktrace.NewTracerProvider(
+		sdktrace.WithBatcher(exporter),
+		sdktrace.WithResource(newResource()),
+	)
+	otel.SetTracerProvider(tracerProvider)
+
+	return func() {
+		if err := tracerProvider.Shutdown(ctx); err != nil {
+			log.Fatalf("stopping tracer provider: %v", err)
+		}
+	}
+}
+
+func main() {
+	ctx := context.Background()
+	// Registers a tracer Provider globally.
+	cleanup := installExportPipeline(ctx)
+	defer cleanup()
+
+	// Create Server and Route Handlers
+	handler := http.HandlerFunc(httpHandler)
+	wrappedHandler := otelhttp.NewHandler(handler, "httpHandler-instrumented")
+
+	mux := http.NewServeMux()
+	mux.Handle("/", wrappedHandler)
 
 	srv := &http.Server{
-		Handler:      r,
+		Handler:      mux,
 		Addr:         ":8080",
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
