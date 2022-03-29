@@ -13,13 +13,14 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 var tracer = otel.Tracer("github.com/mailaenderli/goHelloWorldServer")
 
 func httpHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	span := tracer.SpanFromContext(ctx)
+	span := trace.SpanFromContext(ctx)
 	
 	query := r.URL.Query()
 	name := query.Get("name")
