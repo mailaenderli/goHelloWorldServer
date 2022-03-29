@@ -19,7 +19,7 @@ var tracer = otel.Tracer("github.com/mailaenderli/goHelloWorldServer")
 
 func httpHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	span := trace.SpanFromContext(ctx)
+	span := tracer.SpanFromContext(ctx)
 	
 	query := r.URL.Query()
 	name := query.Get("name")
