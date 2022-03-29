@@ -65,7 +65,7 @@ func newResource() *resource.Resource {
 		semconv.SchemaURL,
 		semconv.ServiceNameKey.String(os.Getenv("SIGNALFX_SERVICE_NAME")),
 		semconv.ServiceVersionKey.String("0.0.1"),
-		semconv.DeploymentEnvironmentKey.String(os.Getenv("SIGNALFX_SPAN_TAGS"))
+		semconv.DeploymentEnvironmentKey.String(os.Getenv("SIGNALFX_SPAN_TAGS")),
 	)
 }
 
