@@ -63,8 +63,9 @@ func CreateGreeting(name string) string {
 func newResource() *resource.Resource {
 	return resource.NewWithAttributes(
 		semconv.SchemaURL,
-		semconv.ServiceNameKey.String("otlptrace-example"),
+		semconv.ServiceNameKey.String(os.Getenv("SIGNALFX_SERVICE_NAME")),
 		semconv.ServiceVersionKey.String("0.0.1"),
+		semconv.DeploymentEnvironmentKey.String(os.Getenv("SIGNALFX_SPAN_TAGS"))
 	)
 }
 

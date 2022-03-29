@@ -45,6 +45,6 @@ spec:
             - name: SIGNALFX_SERVICE_NAME
               value: "GoHelloWorldApp"
             - name: SIGNALFX_SPAN_TAGS
-              value: "deployment.environment:lab"
+              value: "lab"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: http://$(SPLUNK_OTEL_AGENT):4318
