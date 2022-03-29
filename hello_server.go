@@ -8,42 +8,54 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"math/rand"
 
-	httptrace "github.com/signalfx/signalfx-go-tracing/contrib/net/http"
-	"github.com/signalfx/signalfx-go-tracing/ddtrace/tracer" // global tracer
-	"github.com/signalfx/signalfx-go-tracing/tracing" // helper
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 )
 
-func TraceIdFromCtx(ctx context.Context) (result string) {
-	if span, ok := tracer.SpanFromContext(ctx); ok {
-	  result = tracer.TraceIDHex(span.Context())
-	}
-	return
-}
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func httpHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	_, span := tracer.Start(ctx, "httpHandler")
+	defer span.End()
+
+
+
 	query := r.URL.Query()
 	name := query.Get("name")
-	log.Printf("Received request for %s\n", name, TraceIdFromCtx(ctx))
-	w.Write([]byte(CreateGreeting(name)))
+	log.Printf("Received request for %s\n", name)
+
+	span.SetAttributes(attribute.String("httpHandler.name", string(name)))
+
+	w.Write([]byte(CreateGreeting(name, ctx)))
 }
 
-func CreateGreeting(name string) string {
+func CreateGreeting(name string, ctx context.Context) string {
 	if name == "" {
 		name = "Guest"
 	}
+
+	_, span := tracer.Start(ctx, "createGreeting")
+	defer span.End()
+
+	rand.Seed(time.Now().UnixNano())
+    sleepTime := rand.Intn(2) // n will be between 0 and 2
+    time.Sleep(time.Duration(sleepTime)*time.Second)
+
+	span.SetAttributes(attribute.Int("httpHandler.rndDelay", int(sleepTime)))
+
 	return "Hello, " + name + "\n"
 }
 
 func main() {
 	// Create Server and Route Handlers
-	tracing.Start()
-	defer tracing.Stop()
-	
-	mux := httptrace.NewServeMux(httptrace.WithServiceName("goHelloWorld"))
+	handler := http.HandlerFunc(httpHandler)
+	wrappedHandler := otelhttp.NewHandler(handler, "httpHandler-instrumented")
 
-	mux.HandleFunc("/", handler)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", wrappedHandler)
 
 	srv := &http.Server{
 		Handler:      mux,
