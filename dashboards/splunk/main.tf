@@ -19,7 +19,7 @@ resource "signalfx_dashboard_group" "MiniProject" {
 provider "signalfx" {
   auth_token = var.splunkToken
   # If your organization uses a different realm
-  # api_url = "https://api.us2.signalfx.com"
+  api_url = "https://api.eu0.signalfx.com"
   # If your organization uses a custom URL
   # custom_app_url = "https://myorg.signalfx.com"
 }
