@@ -7,8 +7,8 @@ pipeline:
     tags: {}
     stages:
         - stage:
-              name: Deploy to test
-              identifier: Deploy_Service
+              name: Deploy to prod
+              identifier: Deploy_to_prod
               description: ""
               type: Deployment
               spec:
@@ -17,86 +17,40 @@ pipeline:
                       serviceDefinition:
                           type: Kubernetes
                           spec:
-                              artifacts:
-                                  sidecars: []
-                              manifests: []
-                              artifactOverrideSets: []
-                              manifestOverrideSets: []
                               variables: []
-                  infrastructure:
-                      environmentRef: Test
-                      infrastructureDefinition:
-                          type: KubernetesDirect
-                          spec:
-                              connectorRef: org.GKEdefault
-                              namespace: goserver-test
-                              releaseName: release-<+INFRA_KEY>
-                      allowSimultaneousDeployments: false
-                  execution:
-                      steps:
-                          - step:
-                                type: K8sRollingDeploy
-                                name: Deployment
-                                identifier: Deployment
-                                spec:
-                                    skipDryRun: false
-                                timeout: 10m
-                                failureStrategies: []
-                      rollbackSteps: []
-                  serviceDependencies: []
-              tags: {}
-              failureStrategies:
-                  - onFailure:
-                        errors:
-                            - AllErrors
-                        action:
-                            type: StageRollback
-              variables: []
-        - stage:
-              name: Deploy to prod
-              identifier: Deploy_to_prod
-              description: ""
-              type: Deployment
-              spec:
-                  serviceConfig:
-                      useFromStage:
-                          stage: Deploy_Service
-                      stageOverrides:
-                          artifacts:
-                              sidecars: []
-                              primary:
-                                  spec:
-                                      connectorRef: org.Docker_Hub
-                                      imagePath: rmailaender/gohelloworldserver
-                                      tag: <+input>
-                                  type: DockerRegistry
-                          manifests:
-                              - manifest:
-                                    identifier: GoDeployment
-                                    type: K8sManifest
-                                    spec:
-                                        store:
-                                            type: Github
-                                            spec:
-                                                connectorRef: goHelloWorld
-                                                gitFetchType: Branch
-                                                paths:
-                                                    - deployment.yaml
-                                                branch: main
-                                        skipResourceVersioning: false
-                              - manifest:
-                                    identifier: valuesProd
-                                    type: Values
-                                    spec:
-                                        store:
-                                            type: Github
-                                            spec:
-                                                connectorRef: goHelloWorld
-                                                gitFetchType: Branch
-                                                paths:
-                                                    - valuesProd.yaml
-                                                branch: main
-                          variables: []
+                              manifests:
+                                  - manifest:
+                                        identifier: Deployment
+                                        type: K8sManifest
+                                        spec:
+                                            store:
+                                                type: Github
+                                                spec:
+                                                    connectorRef: goHelloWorld
+                                                    gitFetchType: Branch
+                                                    paths:
+                                                        - deployment.yaml
+                                                    branch: main
+                                            skipResourceVersioning: false
+                                  - manifest:
+                                        identifier: ValuesProd
+                                        type: Values
+                                        spec:
+                                            store:
+                                                type: Github
+                                                spec:
+                                                    connectorRef: goHelloWorld
+                                                    gitFetchType: Branch
+                                                    paths:
+                                                        - valuesProd.yaml
+                                                    branch: main
+                              artifacts:
+                                  primary:
+                                      spec:
+                                          connectorRef: org.Docker_Hub
+                                          imagePath: rmailaender/gohelloworldserver
+                                          tag: <+input>
+                                      type: DockerRegistry
                   infrastructure:
                       environmentRef: Test
                       infrastructureDefinition:
@@ -173,7 +127,7 @@ pipeline:
               spec:
                   serviceConfig:
                       useFromStage:
-                          stage: Deploy_Service
+                          stage: Deploy_to_prod
                   infrastructure:
                       environmentRef: Test
                       infrastructureDefinition:
