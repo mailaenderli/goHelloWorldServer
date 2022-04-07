@@ -11,6 +11,11 @@ variable "splunkToken" {
   type = string
 }
 
+resource "signalfx_dashboard_group" "MiniProject" {
+  name        = "Raphael's MiniProject"
+  description = "Cool dashboard group"
+}
+
 provider "signalfx" {
   auth_token = var.splunkToken
   # If your organization uses a different realm
