@@ -30,8 +30,12 @@ resource "signalfx_dashboard" "MiniProject0" {
 
   time_range = "-30m"
 
-  variable {
-    property = "traces.count"
-    alias    = "Count of Traces"
-  }
+}
+
+resource "signalfx_time_chart" "mychart0" {
+  name = "Count of traces"
+
+  program_text = <<-EOF
+        data('traces.count').publish(label='tracesCount')
+        EOF
 }
