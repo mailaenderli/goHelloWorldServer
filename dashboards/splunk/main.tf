@@ -30,9 +30,15 @@ resource "signalfx_dashboard" "MiniProject0" {
 
   time_range = "-30m"
 
+  chart {
+    chart_id = signalfx_time_chart.tracesCount.id
+    width    = 12
+    height   = 1
+  }
+
 }
 
-resource "signalfx_time_chart" "mychart0" {
+resource "signalfx_time_chart" "tracesCount" {
   name = "Count of traces"
 
   program_text = <<-EOF
