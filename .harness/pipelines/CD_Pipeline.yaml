@@ -155,6 +155,13 @@ pipeline:
                                                     branch: main
                                                     folderPath: dashboards/splunk
                                         secretManagerRef: org.harnessSecretManager
+                                        varFiles:
+                                            - varFile:
+                                                  identifier: SplunkToken
+                                                  spec:
+                                                      content: |
+                                                          splunkToken = "<+secrets.getValue("splunkToken")>"
+                                                  type: Inline
                                     provisionerIdentifier: f6d4fe7634a3
                                 timeout: 10m
                                 failureStrategies: []
