@@ -7,6 +7,10 @@ terraform {
   }
 }
 
+variable "splunkToken" {
+  type = string
+}
+
 provider "signalfx" {
   auth_token = var.splunkToken
   # If your organization uses a different realm
