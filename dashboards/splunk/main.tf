@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "signalfx" {
-  auth_token = splunkToken
+  auth_token = var.splunkToken
   # If your organization uses a different realm
   # api_url = "https://api.us2.signalfx.com"
   # If your organization uses a custom URL
