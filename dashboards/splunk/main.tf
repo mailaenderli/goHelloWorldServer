@@ -1,5 +1,5 @@
 provider "signalfx" {
-  auth_token = "<+secrets.getValue("project.splunkToken")>"
+  auth_token = splunkToken
   # If your organization uses a different realm
   # api_url = "https://api.us2.signalfx.com"
   # If your organization uses a custom URL
