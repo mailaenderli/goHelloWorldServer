@@ -153,7 +153,7 @@ pipeline:
                                                     gitFetchType: Branch
                                                     connectorRef: goHelloWorld
                                                     branch: main
-                                                    folderPath: dashboards/signalfx.tf
+                                                    folderPath: dashboards/splunk
                                         secretManagerRef: org.harnessSecretManager
                                     provisionerIdentifier: f6d4fe7634a3
                                 timeout: 10m
