@@ -11,11 +11,6 @@ variable "splunkToken" {
   type = string
 }
 
-resource "signalfx_dashboard_group" "MiniProject" {
-  name        = "Raphael's MiniProject"
-  description = "Cool dashboard group"
-}
-
 provider "signalfx" {
   auth_token = var.splunkToken
   # If your organization uses a different realm
@@ -23,6 +18,16 @@ provider "signalfx" {
   # If your organization uses a custom URL
   # custom_app_url = "https://myorg.signalfx.com"
 }
+
+resource "signalfx_dashboard_group" "MiniProject" {
+  name        = "Raphael's MiniProject"
+  description = "Cool dashboard group"
+}
+
+variable {
+    property = "traces.count"
+    alias    = "Count of Traces"
+  }
 
 resource "signalfx_dashboard" "MiniProject0" {
   name            = "MiniProjectDashboard"
