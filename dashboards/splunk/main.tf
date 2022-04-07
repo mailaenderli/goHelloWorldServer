@@ -24,14 +24,14 @@ resource "signalfx_dashboard_group" "MiniProject" {
   description = "Cool dashboard group"
 }
 
-variable {
-    property = "traces.count"
-    alias    = "Count of Traces"
-  }
-
 resource "signalfx_dashboard" "MiniProject0" {
   name            = "MiniProjectDashboard"
   dashboard_group = signalfx_dashboard_group.MiniProject.id
 
   time_range = "-30m"
+
+  variable {
+    property = "traces.count"
+    alias    = "Count of Traces"
+  }
 }
