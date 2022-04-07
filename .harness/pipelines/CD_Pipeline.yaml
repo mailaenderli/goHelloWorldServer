@@ -137,21 +137,6 @@ pipeline:
                             allowSimultaneousDeployments: false
                         execution:
                             steps:
-                                - step:
-                                      type: HarnessApproval
-                                      name: Manual Approve
-                                      identifier: Manual_Approve
-                                      spec:
-                                          approvalMessage: Please review the following information and approve the pipeline progression
-                                          includePipelineExecutionHistory: true
-                                          approvers:
-                                              userGroups:
-                                                  - account.GoHelloServerApprover
-                                              minimumCount: 1
-                                              disallowPipelineExecutor: false
-                                          approverInputs: []
-                                      timeout: 1d
-                                      failureStrategies: []
                                 - stepGroup:
                                       name: Canary Deployment
                                       identifier: canaryDepoyment
