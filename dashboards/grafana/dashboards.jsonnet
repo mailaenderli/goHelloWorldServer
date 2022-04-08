@@ -12,7 +12,7 @@ local grafana = import 'grafonnet/grafana.libsonnet';
             valueName='current',
         )
         .addTarget(
-            prometheus.target(
+            grafana.prometheus.target(
                 'time() - process_start_time_seconds{env="$env", job="$job", instance="$instance"}',
             )
         ), gridPos={
