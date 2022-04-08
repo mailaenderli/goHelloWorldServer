@@ -5,22 +5,12 @@ local grafana = import 'grafonnet/grafana.libsonnet';
     empty_dashboard: grafana.dashboard.new('Empty Test Dashboard')
     .addPanel(
         grafana.singlestat.new(
-            'uptime',
+            'TestData',
             format='s',
-            datasource='Prometheus',
+            datasource='TestDataDB',
             span=2,
             valueName='current',
         )
-        .addTarget(
-            grafana.prometheus.target(
-                'time() - process_start_time_seconds{env="$env", job="$job", instance="$instance"}',
-            )
-        ), gridPos={
-            x: 0,
-            y: 0,
-            w: 24,
-            h: 3,
-        }
     ),
   },
 }
