@@ -174,6 +174,35 @@ pipeline:
                                     configuration:
                                         type: InheritFromPlan
                                 timeout: 10m
+                          - step:
+                                type: ShellScript
+                                name: Deploy Grafana Dashboard
+                                identifier: Deploy_Grafana_Dashboard
+                                spec:
+                                    shell: Bash
+                                    onDelegate: true
+                                    source:
+                                        type: Inline
+                                        spec:
+                                            script: |-
+                                                go install -a github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb@latest
+
+                                                jb install https://github.com/grafana/grafonnet-lib/grafonnet
+
+                                                # download the binary (adapt os and arch as needed)
+                                                curl -fSL -o "/usr/local/bin/grr" "https://github.com/grafana/grizzly/releases/download/v0.2.0-beta3/grr-linux-amd64"
+
+                                                # make it executable
+                                                chmod a+x "/usr/local/bin/grr"
+
+                                                export GRAFANA_URL="<+secrets.getValue("GrafanaURL")>"
+
+                                                grr apply dashboards.jsonnet
+                                    environmentVariables: []
+                                    outputVariables: []
+                                    executionTarget: {}
+                                timeout: 10m
+                                failureStrategies: []
                       rollbackSteps:
                           - step:
                                 name: Rollback Rollout Deployment
@@ -189,3 +218,44 @@ pipeline:
                             - AllErrors
                         action:
                             type: StageRollback
+        - stage:
+              name: Grafana Dashboard
+              identifier: Grafana_Dashboard
+              type: CI
+              spec:
+                  cloneCodebase: true
+                  infrastructure:
+                      type: KubernetesDirect
+                      spec:
+                          connectorRef: org.GKEdefault
+                          namespace: harness-build
+                  execution:
+                      steps:
+                          - step:
+                                type: Run
+                                name: Apply Grafana Dashboard
+                                identifier: Apply_Grafana_Dashboard
+                                spec:
+                                    connectorRef: org.Docker_Hub
+                                    image: golang
+                                    shell: Sh
+                                    command: |-
+                                        go install -a github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb@latest
+
+                                        jb install https://github.com/grafana/grafonnet-lib/grafonnet
+
+                                        # download the binary (adapt os and arch as needed)
+                                        curl -fSL -o "/usr/local/bin/grr" "https://github.com/grafana/grizzly/releases/download/v0.2.0-beta3/grr-linux-amd64"
+
+                                        # make it executable
+                                        chmod a+x "/usr/local/bin/grr"
+
+                                        grr apply dashboards/grafana/dashboards.jsonnet
+                                    envVariables:
+                                        GRAFANA_URL: <+secrets.getValue("GrafanaURL")>
+                                failureStrategies: []
+    properties:
+        ci:
+            codebase:
+                connectorRef: goHelloWorld
+                build: <+input>
