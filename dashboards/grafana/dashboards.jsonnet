@@ -4,7 +4,7 @@ local grafana = import 'grafonnet/grafana.libsonnet';
   grafanaDashboards:: {
     empty_dashboard: grafana.dashboard.new('Empty Test Dashboard')
     .addPanel(
-        singlestat.new(
+        grafana.singlestat.new(
             'uptime',
             format='s',
             datasource='Prometheus',
