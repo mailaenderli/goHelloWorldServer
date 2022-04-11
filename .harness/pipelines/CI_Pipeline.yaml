@@ -331,7 +331,7 @@ pipeline:
                                         npm install -g semantic-release               \
                                             @semantic-release/commit-analyzer         \
                                             @semantic-release/exec                    \
-                                            @codedependant/semantic-release-dockerlog
+                                            @codedependant/semantic-release-docker
 
                                         npx semantic-release -d
                                     envVariables:
