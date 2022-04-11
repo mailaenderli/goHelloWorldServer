@@ -325,9 +325,19 @@ pipeline:
                                 identifier: DockerTag
                                 spec:
                                     connectorRef: org.Docker_Hub
-                                    image: node
+                                    image: docker
                                     shell: Sh
                                     command: |-
+                                        NODE_VERSION=16.14.2
+                                        apt install -y curl
+                                        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+                                        NVM_DIR=/root/.nvm
+                                        . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+                                        . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
+                                        . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+                                        PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+                                        node --version
+                                        npm --version
                                         npm install -g semantic-release               \
                                             @semantic-release/commit-analyzer         \
                                             @semantic-release/exec                    \
