@@ -338,6 +338,7 @@ pipeline:
                                     envVariables:
                                         DOCKER_USERNAME: <+secrets.getValue("DOCKER_USERNAME")>
                                         DOCKER_PASSWORD: <+secrets.getValue("DOCKER_PASSWORD")>
+                                        GITHUB_TOKEN: <+secrets.getValue("githubtoken")>
               when:
                   pipelineStatus: Success
                   condition: <+pipeline.variables.branchpushed> =^ "main"
