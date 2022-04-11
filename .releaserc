@@ -2,11 +2,14 @@
     "branches": ["main"],
     "plugins": [
         "@semantic-release/commit-analyzer",
-        ["@semantic-release/exec", {
-            "prepareCmd": "docker build -t rmailaender/gohelloworldserver ."
-          }],
-          ["semantic-release-docker", {
-            "name": "rmailaender/gohelloworldserver"
-          }]
+        "@codedependant/semantic-release-docker", {
+            "dockerTags": ["latest", "{{version}}", "{{major}}-latest", "{{major}}.{{minor}}"],
+            "dockerImage": "gohelloworldserver",
+            "dockerFile": "Dockerfile",
+            "dockerProject": "rmailaender",
+            "dockerArgs": {
+                "RELEASE_VERSION": "{{next.version}}"
+            }
+        }
     ]
 }

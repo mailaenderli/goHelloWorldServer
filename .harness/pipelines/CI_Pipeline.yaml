@@ -331,13 +331,12 @@ pipeline:
                                         npm install -g semantic-release               \
                                             @semantic-release/commit-analyzer         \
                                             @semantic-release/exec                    \
-                                            semantic-release-docker                   \
-                                            @semantic-release/changelog
+                                            @codedependant/semantic-release-dockerlog
 
                                         npx semantic-release -d
                                     envVariables:
-                                        DOCKER_USERNAME: <+secrets.getValue("DOCKER_USERNAME")>
-                                        DOCKER_PASSWORD: <+secrets.getValue("DOCKER_PASSWORD")>
+                                        DOCKER_REGISTRY_USER: <+secrets.getValue("DOCKER_USERNAME")>
+                                        DOCKER_REGISTRY_PASSWORD: <+secrets.getValue("DOCKER_PASSWORD")>
                                         GITHUB_TOKEN: <+secrets.getValue("githubtoken")>
               when:
                   pipelineStatus: Success
