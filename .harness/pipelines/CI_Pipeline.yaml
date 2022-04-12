@@ -325,18 +325,32 @@ pipeline:
                                 identifier: DockerTag
                                 spec:
                                     connectorRef: org.Docker_Hub
-                                    image: node
-                                    shell: Sh
+                                    image: ubuntu
+                                    shell: Bash
                                     command: |-
-                                        apt update
-                                        apt install -y iptables
+                                        apt-get update
 
-                                        curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKERVERSION}.tgz \
-                                                                                  && tar xzvf docker-${DOCKERVERSION}.tgz \
-                                                                                  && cp docker/* /usr/bin/ \
-                                                                                  && rm docker-${DOCKERVERSION}.tgz
+                                        apt-get install -y \
+                                            ca-certificates \
+                                            curl \
+                                            gnupg \
+                                            lsb-release \
+                                            curl \
+                                            gpg
 
-                                        dockerd &
+                                        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+                                        echo \
+                                          "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+                                          $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+                                        export DEBIAN_FRONTEND="noninteractive"
+                                        export TZ="Europe/Zurich"
+
+                                        apt-get update
+                                        apt-get install -y docker-ce docker-ce-cli containerd.io
+
+                                        apt-get install nodejs npm
 
                                         npm install -g semantic-release               \
                                             @semantic-release/commit-analyzer         \
@@ -348,7 +362,6 @@ pipeline:
                                         DOCKER_REGISTRY_USER: <+secrets.getValue("DOCKER_USERNAME")>
                                         DOCKER_REGISTRY_PASSWORD: <+secrets.getValue("DOCKER_PASSWORD")>
                                         GITHUB_TOKEN: <+secrets.getValue("githubtoken")>
-                                        DOCKERVERSION: 20.10.14
               when:
                   pipelineStatus: Success
                   condition: <+pipeline.variables.branchpushed> =^ "main"
