@@ -328,6 +328,16 @@ pipeline:
                                     image: node
                                     shell: Sh
                                     command: |-
+                                        apt update
+                                        apt install -y iptables
+
+                                        curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKERVERSION}.tgz \
+                                                                                  && tar xzvf docker-${DOCKERVERSION}.tgz \
+                                                                                  && cp docker/* /usr/bin/ \
+                                                                                  && rm docker-${DOCKERVERSION}.tgz
+
+                                        dockerd &
+
                                         npm install -g semantic-release               \
                                             @semantic-release/commit-analyzer         \
                                             @semantic-release/exec                    \
@@ -339,13 +349,6 @@ pipeline:
                                         DOCKER_REGISTRY_PASSWORD: <+secrets.getValue("DOCKER_PASSWORD")>
                                         GITHUB_TOKEN: <+secrets.getValue("githubtoken")>
                                         DOCKERVERSION: 20.10.14
-                  serviceDependencies:
-                      - identifier: Start_Docker
-                        name: Start Docker
-                        type: Service
-                        spec:
-                            connectorRef: org.Docker_Hub
-                            image: docker
               when:
                   pipelineStatus: Success
                   condition: <+pipeline.variables.branchpushed> =^ "main"
