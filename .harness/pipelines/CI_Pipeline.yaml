@@ -326,7 +326,7 @@ pipeline:
                                 spec:
                                     connectorRef: org.Docker_Hub
                                     image: docker
-                                    shell: Sh
+                                    shell: Bash
                                     command: |-
                                         NODE_VERSION=16.14.2
                                         wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
