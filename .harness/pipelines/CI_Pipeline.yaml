@@ -328,6 +328,8 @@ pipeline:
                                     image: rmailaender/cicdtagimage
                                     shell: Bash
                                     command: |-
+                                        dockerd &
+
                                         npm install -g semantic-release               \
                                             @semantic-release/commit-analyzer         \
                                             @semantic-release/exec                    \
