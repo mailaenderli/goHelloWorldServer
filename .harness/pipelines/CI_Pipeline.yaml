@@ -325,18 +325,14 @@ pipeline:
                                 identifier: DockerTag
                                 spec:
                                     connectorRef: org.Docker_Hub
-                                    image: docker
-                                    shell: Bash
+                                    image: node
+                                    shell: Sh
                                     command: |-
-                                        NODE_VERSION=16.14.2
-                                        wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-                                        NVM_DIR=/root/.nvm
-                                        . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
-                                        . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
-                                        . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
-                                        PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-                                        node --version
-                                        npm --version
+                                        curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKERVERSION}.tgz \
+                                          && tar xzvf docker-${DOCKERVERSION}.tgz --strip 1 \
+                                                         -C /usr/local/bin docker/docker \
+                                          && rm docker-${DOCKERVERSION}.tgz
+
                                         npm install -g semantic-release               \
                                             @semantic-release/commit-analyzer         \
                                             @semantic-release/exec                    \
@@ -347,6 +343,7 @@ pipeline:
                                         DOCKER_REGISTRY_USER: <+secrets.getValue("DOCKER_USERNAME")>
                                         DOCKER_REGISTRY_PASSWORD: <+secrets.getValue("DOCKER_PASSWORD")>
                                         GITHUB_TOKEN: <+secrets.getValue("githubtoken")>
+                                        DOCKERVERSION: 20.10.14
               when:
                   pipelineStatus: Success
                   condition: <+pipeline.variables.branchpushed> =^ "main"
