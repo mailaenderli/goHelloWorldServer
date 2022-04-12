@@ -329,9 +329,11 @@ pipeline:
                                     shell: Sh
                                     command: |-
                                         curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKERVERSION}.tgz \
-                                          && tar xzvf docker-${DOCKERVERSION}.tgz --strip 1 \
-                                                         -C /usr/local/bin docker/docker \
+                                          && tar xzvf docker-${DOCKERVERSION}.tgz
+                                          && cp docker/* /usr/bin/
                                           && rm docker-${DOCKERVERSION}.tgz
+
+                                        dockerd &
 
                                         npm install -g semantic-release               \
                                             @semantic-release/commit-analyzer         \
