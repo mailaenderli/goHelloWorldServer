@@ -325,10 +325,10 @@ pipeline:
                                 identifier: DockerTag
                                 spec:
                                     connectorRef: org.Docker_Hub
-                                    image: rmailaender/cicdtagimage
-                                    shell: Bash
+                                    image: docker
+                                    shell: Sh
                                     command: |-
-                                        dockerd &
+                                        apk add --update nodejs npm
 
                                         npm install -g semantic-release               \
                                             @semantic-release/commit-analyzer         \
