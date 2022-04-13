@@ -325,17 +325,13 @@ pipeline:
                                 identifier: DockerTag
                                 spec:
                                     connectorRef: org.Docker_Hub
-                                    image: node
+                                    image: rmailaender/cicdsemanticrelease
                                     shell: Sh
                                     command: |
-                                        npm install -g semantic-release               \
-                                            @semantic-release/commit-analyzer         \
-                                            @semantic-release/exec                    \
-
-                                        echo 'export NEXT_VERSION=$1' > setenvVar.sh
-
                                         npx semantic-release --no-ci
-                                        export NEXT_VERSION=$(npx semantic-release --dryRun | grep -oP 'Published release \K.*? ')
+                                        NEXT_VERSION=$(npx semantic-release --dryRun | grep -oP 'Published release \K.*? ')
+
+                                        export NEXT_VERSION
                                     envVariables:
                                         DOCKER_REGISTRY_USER: <+secrets.getValue("DOCKER_USERNAME")>
                                         DOCKER_REGISTRY_PASSWORD: <+secrets.getValue("DOCKER_PASSWORD")>
