@@ -325,21 +325,20 @@ pipeline:
                                 identifier: DockerTag
                                 spec:
                                     connectorRef: org.Docker_Hub
-                                    image: docker
+                                    image: node
                                     shell: Sh
                                     command: |-
-                                        apk add --update nodejs npm git
-
                                         npm install -g semantic-release               \
                                             @semantic-release/commit-analyzer         \
                                             @semantic-release/exec                    \
-                                            @codedependant/semantic-release-docker
 
                                         npx semantic-release --no-ci
                                     envVariables:
                                         DOCKER_REGISTRY_USER: <+secrets.getValue("DOCKER_USERNAME")>
                                         DOCKER_REGISTRY_PASSWORD: <+secrets.getValue("DOCKER_PASSWORD")>
                                         GITHUB_TOKEN: <+secrets.getValue("githubtoken")>
+                                    outputVariables:
+                                        - name: NEXT_VERSION
               when:
                   pipelineStatus: Success
                   condition: <+pipeline.variables.branchpushed> =^ "main"
