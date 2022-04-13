@@ -328,7 +328,7 @@ pipeline:
                                     image: docker
                                     shell: Sh
                                     command: |-
-                                        apk add --update nodejs npm
+                                        apk add --update nodejs npm git
 
                                         npm install -g semantic-release               \
                                             @semantic-release/commit-analyzer         \
