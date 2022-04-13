@@ -3,7 +3,7 @@ module.exports = {
     plugins: [
         "@semantic-release/commit-analyzer",
         ['@semantic-release/exec', {
-            publishCmd: "export NEXT_VERSION=${nextRelease.version}"
+            publishCmd: ". ./setenvVar.sh ${nextRelease.version}"
           }
         ]
     ]

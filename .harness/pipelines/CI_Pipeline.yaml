@@ -332,9 +332,9 @@ pipeline:
                                             @semantic-release/commit-analyzer         \
                                             @semantic-release/exec                    \
 
-                                        npx semantic-release --no-ci
+                                        echo 'export NEXT_VERSION=$1' > setenvVar.sh
 
-                                        export NEXT_VERSION=TEST
+                                        npx semantic-release --no-ci
                                     envVariables:
                                         DOCKER_REGISTRY_USER: <+secrets.getValue("DOCKER_USERNAME")>
                                         DOCKER_REGISTRY_PASSWORD: <+secrets.getValue("DOCKER_PASSWORD")>
