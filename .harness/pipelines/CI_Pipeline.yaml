@@ -335,6 +335,8 @@ pipeline:
                                         echo 'export NEXT_VERSION=$1' > setenvVar.sh
 
                                         npx semantic-release --no-ci
+
+                                        export NEXT_VERSION
                                     envVariables:
                                         DOCKER_REGISTRY_USER: <+secrets.getValue("DOCKER_USERNAME")>
                                         DOCKER_REGISTRY_PASSWORD: <+secrets.getValue("DOCKER_PASSWORD")>
