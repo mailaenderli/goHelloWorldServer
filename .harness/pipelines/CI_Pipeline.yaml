@@ -326,7 +326,7 @@ pipeline:
                                 spec:
                                     connectorRef: org.Docker_Hub
                                     image: rmailaender/cicdsemanticrelease
-                                    shell: Sh
+                                    shell: Bash
                                     command: |
                                         npx semantic-release --no-ci
                                         npx semantic-release --dryRun | grep -oP 'Published release \K.*? ' > NEXT_VERSION
