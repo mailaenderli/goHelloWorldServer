@@ -333,6 +333,8 @@ pipeline:
                                             @semantic-release/exec                    \
 
                                         npx semantic-release --no-ci
+
+                                        export NEXT_VERSION=TEST
                                     envVariables:
                                         DOCKER_REGISTRY_USER: <+secrets.getValue("DOCKER_USERNAME")>
                                         DOCKER_REGISTRY_PASSWORD: <+secrets.getValue("DOCKER_PASSWORD")>
