@@ -9,7 +9,7 @@ local grafana = import 'grafonnet/grafana.libsonnet';
             datasource='TestDataDB',
         ),
         gridPos={
-          x: 13,
+          x: 0,
           y: 0,
           w: 12,
           h: 9,
