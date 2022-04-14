@@ -347,6 +347,9 @@ pipeline:
                                     tags:
                                         - <+steps.DockerTag.output.outputVariables.NEXT_VERSION>
                                     dockerfile: Dockerfile.build
+                                    resources:
+                                        limits:
+                                            memory: 1000Mi
                                 failureStrategies: []
                                 when:
                                     stageStatus: Success
