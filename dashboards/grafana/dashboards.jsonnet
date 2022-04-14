@@ -12,7 +12,7 @@ local grafana = import 'grafonnet/grafana.libsonnet';
           x: 13,
           y: 0,
           w: 12,
-          h: 3,
+          h: 9,
         }
     ),
   },
