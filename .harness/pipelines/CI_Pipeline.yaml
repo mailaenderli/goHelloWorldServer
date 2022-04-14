@@ -50,6 +50,8 @@ pipeline:
                                     repo: rmailaender/gohelloworldserver
                                     tags:
                                         - <+pipeline.variables.dockerTag>
+                                        - <+<+pipeline.variables.dockerTag>.substring(0,<+pipeline.variables.dockerTag>.lastIndexOf("."))>
+                                        - <+<+<+pipeline.variables.dockerTag>.substring(0,<+pipeline.variables.dockerTag>.lastIndexOf("."))>.substring(0,<+<+pipeline.variables.dockerTag>.substring(0,<+pipeline.variables.dockerTag>.lastIndexOf("."))>.lastIndexOf("."))>
                                 failureStrategies: []
         - stage:
               name: Integration tests
@@ -329,7 +331,7 @@ pipeline:
                                     shell: Bash
                                     command: |
                                         npx semantic-release --no-ci
-
+                                        test -e .VERSION || (echo NO_RELEASE > .VERSION)
                                         export NEXT_VERSION=$(cat .VERSION)
                                     envVariables:
                                         DOCKER_REGISTRY_USER: <+secrets.getValue("DOCKER_USERNAME")>
@@ -346,6 +348,12 @@ pipeline:
                                     repo: rmailaender/gohelloworldserver
                                     tags:
                                         - <+steps.DockerTag.output.outputVariables.NEXT_VERSION>
+                                        - <+<+pipeline.variables.dockerTag>.substring(0,<+pipeline.variables.dockerTag>.lastIndexOf("."))>
+                                        - <+<+<+pipeline.variables.dockerTag>.substring(0,<+pipeline.variables.dockerTag>.lastIndexOf("."))>.substring(0,<+<+pipeline.variables.dockerTag>.substring(0,<+pipeline.variables.dockerTag>.lastIndexOf("."))>.lastIndexOf("."))>
+                                failureStrategies: []
+                                when:
+                                    stageStatus: Success
+                                    condition: <+steps.DockerTag.output.outputVariables.NEXT_VERSION> != "NO_RELEASE"
               when:
                   pipelineStatus: Success
                   condition: <+pipeline.variables.branchpushed> =^ "main"
