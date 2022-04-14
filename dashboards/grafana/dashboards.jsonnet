@@ -4,17 +4,14 @@ local grafana = import 'grafonnet/grafana.libsonnet';
   grafanaDashboards:: {
     empty_dashboard: grafana.dashboard.new('Empty Test Dashboard')
     .addPanel(
-        grafana.singlestat.new(
-            'TestData',
-            format='s',
+        grafana.graphPanel.new(
+            title= 'TestDataGraph',
             datasource='TestDataDB',
-            span=2,
-            valueName='current',
         ),
         gridPos={
-          x: 0,
+          x: 13,
           y: 0,
-          w: 24,
+          w: 12,
           h: 3,
         }
     ),
