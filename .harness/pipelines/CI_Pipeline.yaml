@@ -321,7 +321,7 @@ pipeline:
                       steps:
                           - step:
                                 type: Run
-                                name: DockerTag
+                                name: Get newest version
                                 identifier: DockerTag
                                 spec:
                                     connectorRef: org.Docker_Hub
@@ -337,6 +337,15 @@ pipeline:
                                         GITHUB_TOKEN: <+secrets.getValue("githubtoken")>
                                     outputVariables:
                                         - name: NEXT_VERSION
+                          - step:
+                                type: BuildAndPushDockerRegistry
+                                name: Push version tags
+                                identifier: Push_version_tags
+                                spec:
+                                    connectorRef: org.Docker_Hub
+                                    repo: rmailaender/gohelloworldserver
+                                    tags:
+                                        - <+steps.DockerTag.output.outputVariables.NEXT_VERSION>
               when:
                   pipelineStatus: Success
                   condition: <+pipeline.variables.branchpushed> =^ "main"
