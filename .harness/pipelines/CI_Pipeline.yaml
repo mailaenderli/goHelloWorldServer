@@ -346,8 +346,8 @@ pipeline:
                                     repo: rmailaender/gohelloworldserver
                                     tags:
                                         - <+steps.DockerTag.output.outputVariables.NEXT_VERSION>
-                                        - <+<+pipeline.variables.dockerTag>.substring(0,<+pipeline.variables.dockerTag>.lastIndexOf("."))>
-                                        - <+<+<+pipeline.variables.dockerTag>.substring(0,<+pipeline.variables.dockerTag>.lastIndexOf("."))>.substring(0,<+<+pipeline.variables.dockerTag>.substring(0,<+pipeline.variables.dockerTag>.lastIndexOf("."))>.lastIndexOf("."))>
+                                        - <+<+steps.DockerTag.output.outputVariables.NEXT_VERSION>.substring(0,<+steps.DockerTag.output.outputVariables.NEXT_VERSION>.lastIndexOf("."))>
+                                        - <+<+<+steps.DockerTag.output.outputVariables.NEXT_VERSION>.substring(0,<+steps.DockerTag.output.outputVariables.NEXT_VERSION>.lastIndexOf("."))>.substring(0,<+<+steps.DockerTag.output.outputVariables.NEXT_VERSION>.substring(0,<+steps.DockerTag.output.outputVariables.NEXT_VERSION>.lastIndexOf("."))>.lastIndexOf("."))>
                                 failureStrategies: []
                                 when:
                                     stageStatus: Success
