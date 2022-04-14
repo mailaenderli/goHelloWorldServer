@@ -346,6 +346,7 @@ pipeline:
                                     repo: rmailaender/gohelloworldserver
                                     tags:
                                         - <+steps.DockerTag.output.outputVariables.NEXT_VERSION>
+                                        - <+<+steps.DockerTag.output.outputVariables.NEXT_VERSION>.substring(0,<+steps.DockerTag.output.outputVariables.NEXT_VERSION>.lastIndexOf("."))>
                                     dockerfile: Dockerfile.build
                                     resources:
                                         limits:
