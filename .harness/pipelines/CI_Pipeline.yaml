@@ -346,6 +346,7 @@ pipeline:
                                     repo: rmailaender/gohelloworldserver
                                     tags:
                                         - <+steps.DockerTag.output.outputVariables.NEXT_VERSION>
+                                    dockerfile: Dockerfile.build
                                 failureStrategies: []
                                 when:
                                     stageStatus: Success
