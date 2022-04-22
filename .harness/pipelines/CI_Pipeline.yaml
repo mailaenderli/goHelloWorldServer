@@ -354,6 +354,22 @@ pipeline:
                                 when:
                                     stageStatus: Success
                                     condition: <+steps.DockerTag.output.outputVariables.NEXT_VERSION> != "NO_RELEASE"
+                          - step:
+                                type: Run
+                                name: Docker Test
+                                identifier: Docker_Test
+                                spec:
+                                    connectorRef: org.Docker_Hub
+                                    image: docker
+                                    shell: Sh
+                                    command: docker info
+                  serviceDependencies:
+                      - identifier: Docker_Deamon
+                        name: Docker Deamon
+                        type: Service
+                        spec:
+                            connectorRef: org.Docker_Hub
+                            image: docker:dind
               when:
                   pipelineStatus: Success
                   condition: <+pipeline.variables.branchpushed> =^ "main"
