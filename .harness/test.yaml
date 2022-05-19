@@ -1,0 +1,36 @@
+pipeline:
+    name: test
+    identifier: test
+    projectIdentifier: goHelloWorld
+    orgIdentifier: default
+    tags: {}
+    properties:
+        ci:
+            codebase:
+                connectorRef: goHelloWorld
+                build: <+input>
+    stages:
+        - stage:
+              name: test
+              identifier: test
+              type: CI
+              spec:
+                  cloneCodebase: true
+                  infrastructure:
+                      type: KubernetesDirect
+                      spec:
+                          connectorRef: org.GKEdefault
+                          namespace: default
+                          automountServiceAccountToken: true
+                          nodeSelector: {}
+                  execution:
+                      steps:
+                          - step:
+                                type: Run
+                                name: test
+                                identifier: test
+                                spec:
+                                    connectorRef: org.Docker_Hub
+                                    image: buster
+                                    shell: Sh
+                                    command: echo test
